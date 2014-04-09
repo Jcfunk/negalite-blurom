@@ -1,0 +1,7 @@
+#!/system/bin/sh
+
+# set VSYNC off
+mount -t debugfs debugfs /sys/kernel/debug
+echo 1 >/sys/kernel/debug/msm_fb/0/vsync_enable
+echo 1 >/sys/kernel/debug/msm_fb/0/hw_vsync_mode
+echo 3 >/sys/kernel/debug/msm_fb/0/backbuff

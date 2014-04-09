@@ -1,0 +1,11 @@
+#!/system/bin/sh
+insmod /system/lib/modules/mg.ko
+insmod /system/lib/modules/mgscc.ko
+insmod /system/lib/modules/mgscsi.ko
+chown root.wmmedia /dev/mg
+chmod 660 /dev/mg
+chown root.wmmedia /dev/mgscc
+chmod 660 /dev/mgscc
+chown root.wmmedia /dev/mgscsi
+chmod 660 /dev/mgscsi
+/system/bin/mgscsi_init

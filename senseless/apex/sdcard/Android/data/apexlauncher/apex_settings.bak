@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+<boolean name="show_downloaded_apps_tab" value="true" />
+<string name="folder_preview">GRID</string>
+<string name="two_finger_swipe_down_action">DO_NOTHING</string>
+<boolean name="menu_add" value="true" />
+<string name="theme_iconpack_pkg">default</string>
+<string name="dock_horizontal_margin">MEDIUM</string>
+<boolean name="fade_drawer_indicator" value="true" />
+<boolean name="show_all_apps_tab" value="true" />
+<boolean name="hide_crosshairs" value="true" />
+<boolean name="menu_manage_drawer" value="true" />
+<string name="homescreen_indicator_position">AUTO</string>
+<boolean name="homescreen_overscroll_effect" value="true" />
+<boolean name="menu_manage_screens" value="true" />
+<boolean name="fade_homescreen_indicator" value="true" />
+<string name="theme_font_pkg">default</string>
+<string name="search_bar_style">ICE_CREAM_SANDWICH</string>
+<string name="theme_icon_type">apex_theme</string>
+<boolean name="menu_theme" value="true" />
+<string name="drawer_transition_effect">TABLET</string>
+<boolean name="desktop_long_press_feedback" value="true" />
+<string name="home_key_action">SHOW_PREVIEWS</string>
+<boolean name="dock_elastic_scrolling" value="false" />
+<boolean name="hide_icon_labels" value="false" />
+<string name="desktop_long_press_action">ADD_DIALOG</string>
+<string name="dock_vertical_margin">MEDIUM</string>
+<boolean name="hide_notification_bar" value="false" />
+<int name="homescreen_portrait_grid_rows" value="6" />
+<boolean name="acra.enable" value="false" />
+<boolean name="menu_help" value="true" />
+<boolean name="menu_manage_apps" value="true" />
+<boolean name="homescreen_elastic_scrolling" value="false" />
+<boolean name="dock_infinite_scrolling" value="true" />
+<string name="drawer_tab_icon">MENU</string>
+<string name="folder_background">SQUARE</string>
+<long name="last_check_update" value="1357802301453" />
+<string name="drawer_portrait_grid">5 x 5</string>
+<string name="screen_orientation">ROTATE</string>
+<boolean name="menu_settings" value="true" />
+<string name="swipe_down_action">DO_NOTHING</string>
+<boolean name="drawer_infinite_scrolling" value="true" />
+<int name="acra.lastVersionNr" value="54" />
+<string name="desktop_double_tap_action">APEX_MENU</string>
+<boolean name="menu_preferences" value="true" />
+<string name="drawer_animation">FLY</string>
+<boolean name="drawer_elastic_scrolling" value="true" />
+<string name="drawer_horizontal_margin">NONE</string>
+<boolean name="enable_analytics" value="false" />
+<string name="app_locale">en</string>
+<string name="show_persistent_search_bar">LANDSCAPE_ONLY</string>
+<boolean name="auto_merge_folders" value="true" />
+<string name="wallpaper_mode">MULTIPLE_SCREEN</string>
+<string name="drawer_indicator_position">BOTTOM</string>
+<string name="dock_background">NONE</string>
+<boolean name="enable_quick_action" value="true" />
+<boolean name="notify_import_data" value="true" />
+<string name="drawer_style">VERTICAL_CONTINUOUS</string>
+<boolean name="icon_long_press_feedback" value="true" />
+<boolean name="resize_any_widget" value="true" />
+<boolean name="show_wallpaper" value="true" />
+<boolean name="show_drawer_indicator" value="true" />
+<boolean name="keep_in_memory" value="true" />
+<boolean name="show_dock_indicator" value="true" />
+<int name="homescreen_landscape_grid_columns" value="5" />
+<string name="pinch_in_action">SHOW_PREVIEWS</string>
+<string name="homescreen_infinite_scrolling_type">JUMP</string>
+<boolean name="hide_icon_labels_inside_folders" value="true" />
+<boolean name="menu_lock_desktop" value="true" />
+<boolean name="homescreen_use_alpha_effect" value="false" />
+<string name="homescreen_vertical_margin">MEDIUM</string>
+<int name="dock_icon_size" value="97" />
+<int name="drawer_portrait_grid_columns" value="5" />
+<boolean name="drawer_touch_feedback" value="true" />
+<boolean name="hide_dock_divider" value="true" />
+<boolean name="hide_shadows" value="false" />
+<string name="swipe_up_action">DO_NOTHING</string>
+<boolean name="menu_wallpaper" value="true" />
+<int name="drawer_portrait_grid_rows" value="5" />
+<boolean name="drawer_join_tabs" value="true" />
+<string name="activity_animation">JELLY_BEAN</string>
+<string name="drawer_apps_sorting">APP_TITLE</string>
+<string name="dock_indicator_position">BOTTOM</string>
+<boolean name="home_key_to_default_screen" value="true" />
+<string name="homescreen_horizontal_margin">MEDIUM</string>
+<string name="homescreen_transition_effect">CUBE</string>
+<int name="homescreen_landscape_grid_rows" value="5" />
+<boolean name="show_widgets_tab" value="true" />
+<boolean name="enable_reporting" value="false" />
+<boolean name="show_homescreen_indicator" value="true" />
+<int name="homescreen_portrait_grid_columns" value="4" />
+<string name="homescreen_landscape_grid">5 x 5</string>
+<string name="homescreen_portrait_grid">6 x 4</string>
+<string name="previous_app_version">1.4.0</string>
+<string name="two_finger_swipe_up_action">DO_NOTHING</string>
+<string name="theme_skin_pkg">default</string>
+</map>

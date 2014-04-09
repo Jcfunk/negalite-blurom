@@ -1,0 +1,4 @@
+post-build=sprint/htc_shooter/shooter:4.0.3/IML74K/409645.2:user/release-keys
+post-timestamp=1341572800
+pre-build=sprint/htc_shooter/shooter:2.3.4/GRJ22/245066.5:user/release-keys
+pre-device=shooter

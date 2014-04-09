@@ -1,0 +1,24 @@
+#!/system/bin/sh
+
+#Set buttered features
+
+echo 32 > /sys/kernel/debug/msm_fb/0/bpp
+
+# load scsi-wait driver for OTG
+insmod /system/lib/modules/scsi_wait_scan.ko
+
+# mpdecision - kernel support
+echo 1 >/sys/kernel/msm_mpdecision/conf/enabled
+
+# camera type selection (rom type) - SENSE MODE
+echo 0 >/sys/kernel/rom_type/rom_type
+
+if [ -e /system/etc/init.d/99buttered ]; then
+	rm -f /system/etc/init.d/99buttered
+fi	
+
+if [ -e /system/app/MySketcher.apk ]; then
+	setprop ro.htc.framework.screencapture true
+else
+	setprop ro.htc.framework.screencapture false
+fi	

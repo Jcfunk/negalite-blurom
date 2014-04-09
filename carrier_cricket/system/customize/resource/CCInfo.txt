@@ -1,0 +1,5 @@
+﻿Project: Shooter_ICS_35_S
+SKU: SPC VM ROM
+ROM Build ID: 459929
+Build ID: 459930; SKU: SPC VM ROM default; CID: default; MNS: default
+Datetime: 2012/11/29 14:48:00

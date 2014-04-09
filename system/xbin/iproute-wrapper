@@ -1,0 +1,23 @@
+#!/system/bin/sh
+
+# ip route wrapper, add 'table local' to all commands
+
+PATH=/sbin:/system/sbin:/system/bin:/system/xbin
+export PATH
+
+IPROUTE=/system/bin/ip
+
+has_local_table=$("$IPROUTE" rule show | grep ' local')
+case "$@" in
+    *'route add'*|*'route del'*)
+        if [ -z "$has_local_table" ]; then
+            "$IPROUTE" rule add from all table local
+        fi
+        exec "$IPROUTE" "$@" table local
+        ;;
+    *)
+        exec "$IPROUTE" "$@"
+        ;;
+esac
+
+# EOF
