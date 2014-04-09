@@ -1,0 +1,4 @@
+#!/system/bin/sh
+
+echo 0 >/sys/android_touch/sweep2wake
+

@@ -1,0 +1,1331 @@
+set_progress(0.00);
+set_progress(0.00);
+
+###############################
+# Negalite BluRom Installer
+###############################
+
+ui_print("@!!!Negalite Blurom updater-script!!!");
+
+ifelse(is_mounted("/system") == "/system", unmount("/system"));
+ifelse(is_mounted("/data") == "/data", unmount("/data"));
+ifelse(is_mounted("/cache") == "/cache", unmount("/cache"));
+
+package_extract_dir("setup", "/tmp");
+set_perm_recursive(0, 0, 0777, 0777, "/tmp");
+
+if
+file_getprop("/tmp/aroma-data/wipe_select.prop","selected.0") == "1"
+then 
+ui_print("@Wiping Partitions");
+
+if 
+file_getprop("/tmp/aroma-data/wipe.prop","item.0.1") == "1"
+then
+ui_print("");
+ui_print("@-Formatting Boot Partition");
+run_program("/sbin/erase_image", "boot");
+format("ext4", "EMMC", "/dev/block/mmcblk0p21", "0", "/boot");
+run_program("/sbin/sleep", "1");
+ui_print("Done");
+set_progress(0.025);
+endif;
+
+if
+file_getprop("/tmp/aroma-data/wipe.prop","item.0.2") == "1"
+then
+ui_print("");
+ui_print("@-Formatting Ext4 Data Partition");
+run_program("/sbin/erase_image", "userdata");
+format("ext4", "EMMC", "/dev/block/mmcblk0p24", "0", "/data");
+ifelse(is_mounted("/system") == "/system", unmount("/system"));
+set_progress(0.075);
+ui_print("Done");
+ui_print("@-Checking Data For Errors");
+run_program("/sbin/e2fsck", "-p", "/dev/block/mmcblk0p24");
+set_progress(0.080);
+ui_print("@-Optimizing Data");
+run_program("/tmp/mkfs.ext4", "-O", "^ext_attr,^has_journal,^huge_file", "-L", "DATA", "-b", "4096", "-m", "0", "-F", "/dev/block/mmcblk0p24");
+run_program("/tmp/tune2fs.ext4", "-c", "1", "-m", "0", "-o", "journal_data_writeback", "/dev/block/mmcblk0p24");
+run_program("/tmp/fsck.ext4", "-Dfy", "/dev/block/mmcblk0p24");
+set_progress(0.085);
+ui_print("Done");
+endif;
+
+if
+file_getprop("/tmp/aroma-data/wipe.prop","item.0.3") == "1"
+then
+ui_print("");
+ui_print("@-Formatting Ext4 SD-Ext Partition");
+run_program("/sbin/erase_image", "sd-ext");
+format("ext4", "EMMC", "/dev/block/mmcblk1p2", "0", "/sd-ext");
+ifelse(is_mounted("/sd-ext") == "/sd-ext", unmount("/sd-ext"));
+run_program("/sbin/sleep", "1");
+set_progress(0.115);
+ui_print("@-Formatting Ext4 SD-Ext2 Partition");
+run_program("/sbin/erase_image", "sd-ext2");
+format("ext4", "EMMC", "/dev/block/mmcblk1p3", "0", "/sd-ext2");
+ifelse(is_mounted("/sd-ext2") == "/sd-ext2", unmount("/sd-ext2"));
+run_program("/sbin/sleep", "1");
+ui_print("Done");
+endif;
+set_progress(0.125);
+
+if
+file_getprop("/tmp/aroma-data/wipe.prop","item.0.4") == "1"
+then
+ui_print("");
+ui_print("@-Removing Old System Files From SD Card");
+delete_recursive("/sdcard/.android_secure");
+delete_recursive("/sdcard/.bookmark_thumb1");
+delete_recursive("/sdcard/.data/footprints");
+delete_recursive("/sdcard/.data/mail");
+delete_recursive("/sdcard/Android/data/com.android.providers.media");
+delete_recursive("/sdcard/Android/data/com.google.android.apps.genie.geniewidget.news-content-cache");
+delete_recursive("/sdcard/Android/data/com.google.android.apps.maps");
+delete_recursive("/sdcard/.data/navigator/Data/Temporary");
+delete_recursive("/sdcard/LazyList");
+delete_recursive("/sdcard/LOST.DIR");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+endif;
+set_progress(0.150);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# System Format And Install
+###############################
+
+ui_print("");
+ui_print("@-Formatting Ext4 System Partition");
+run_program("/sbin/erase_image", "system");
+format("ext4", "EMMC", "/dev/block/mmcblk0p23", "0", "/system");
+ifelse(is_mounted("/system") == "/system", unmount("/system"));
+run_program("/sbin/sleep", "1");
+set_progress(0.165);
+ui_print("@-Checking System For Errors");
+run_program("/sbin/e2fsck", "-p", "/dev/block/mmcblk0p23");
+set_progress(0.175);
+ui_print("@-Optimizing System");
+run_program("/tmp/mkfs.ext4", "-O", "^ext_attr,^has_journal,^huge_file", "-L", "SYSTEM", "-b", "4096", "-m", "0", "-F", "/dev/block/mmcblk0p23");
+run_program("/tmp/tune2fs.ext4", "-c", "1", "-m", "0", "-o", "journal_data_writeback", "/dev/block/mmcblk0p23");
+run_program("/tmp/fsck.ext4", "-Dfy", "/dev/block/mmcblk0p23");
+set_progress(0.190);
+ui_print("@-Optimizing Devlog");
+run_program("/tmp/mkfs.ext4", "-O", "^ext_attr,^has_journal,^huge_file", "-L", "DEVLOG", "-b", "4096", "-m", "0", "-F", "/dev/block/mmcblk0p29");
+run_program("/tmp/tune2fs.ext4", "-c", "1", "-m", "0", "-o", "journal_data_writeback", "/dev/block/mmcblk0p29");
+run_program("/tmp/fsck.ext4", "-Dfy", "/dev/block/mmcblk0p29");
+ui_print("Done");
+set_progress(0.200);
+
+ui_print("@Installing To System");
+mount("ext4", "EMMC", "/dev/block/mmcblk0p23", "/system"); 
+package_extract_dir("system", "/system");
+package_extract_dir("applications_required", "/system/app");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+set_progress(0.225);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Rosie Mod Install
+###############################
+
+if
+file_getprop("/tmp/aroma-data/romtype.prop","selected.0") == "1"
+then
+if 
+file_getprop("/tmp/aroma-data/rosie.prop","selected.0") == "1"
+then
+ui_print("@Installing 4x4 Rosie Mod");
+package_extract_file("rosie_mods/4x4/Rosie.apk", "/system/app/Rosie.apk");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+
+if 
+file_getprop("/tmp/aroma-data/rosie.prop","selected.0") == "2"
+then
+ui_print("@Installing 4x5 Rosie Mod");
+package_extract_file("rosie_mods/4x5/Rosie.apk", "/system/app/Rosie.apk");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+
+if 
+file_getprop("/tmp/aroma-data/rosie.prop","selected.0") == "3"
+then
+ui_print("@Installing 4x6 Rosie Mod");
+package_extract_file("rosie_mods/4x6/Rosie.apk", "/system/app/Rosie.apk");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+
+if 
+file_getprop("/tmp/aroma-data/rosie.prop","selected.0") == "4"
+then
+ui_print("@Installing 5x5 Rosie Mod");
+package_extract_file("rosie_mods/5x5/Rosie.apk", "/system/app/Rosie.apk");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+set_perm(0, 0, 06755, "/system/app/Rosie.apk");
+endif;
+set_progress(0.250);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Graphics Options
+###############################
+
+if 
+file_getprop("/tmp/aroma-data/graphics.prop","selected.0") == "1"
+then
+ui_print("@Installing Quality Graphics Settings");
+package_extract_file("graphics/adreno_config/adreno_config_quality.txt", "/system/etc/adreno_config.txt");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+
+if 
+file_getprop("/tmp/aroma-data/graphics.prop","selected.0") == "2"
+then
+ui_print("@Installing Performance Graphics Settings");
+package_extract_file("graphics/adreno_config/adreno_config_performance.txt", "/system/etc/adreno_config.txt");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+set_progress(0.275);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# VSync Options
+###############################
+
+if 
+file_getprop("/tmp/aroma-data/vsync.prop","selected.0") == "1"
+then
+ui_print("@Turning VSync On");
+package_extract_file("graphics/vsync/99vsync_on", "/system/etc/init.d/99vsync");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+
+if 
+file_getprop("/tmp/aroma-data/vsync.prop","selected.0") == "2"
+then
+ui_print("@Turning VSync Off");
+package_extract_file("graphics/vsync/99vsync_off", "/system/etc/init.d/99vsync");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+set_progress(0.300);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Carrier Options
+###############################
+
+if 
+file_getprop("/tmp/aroma-data/carrier.prop","selected.0") == "1"
+then
+ui_print("@Installing Cricket Carrier Files");
+package_extract_dir("carrier_cricket/system", "/system");
+package_extract_file("carrier_cricket/build.prop", "/system/build.prop");
+package_extract_file("carrier_cricket/com.cricket.shima.handset.android.v1.muvemusic", "/data/app/com.cricket.shima.handset.android.v1.muvemusic");
+set_progress(0.312);
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+
+if 
+file_getprop("/tmp/aroma-data/carrier.prop","selected.0") == "2"
+then
+ui_print("@Installing Sprint Carrier Files");
+package_extract_dir("carrier_sprint", "/system");
+if
+file_getprop("/tmp/aroma-data/addstock.prop","item.0.1") == "1"
+then
+ui_print("@-Installing Sprint Connections Optimizer");
+package_extract_dir("applications_stock/conn_optimize_sprint", "/system");
+set_progress(0.312);
+endif;
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+
+if 
+file_getprop("/tmp/aroma-data/carrier.prop","selected.0") == "3"
+then
+ui_print("@-Installing Virgin Mobile Carrier Files");
+package_extract_dir("carrier_virgin_mobile", "/system");
+if
+file_getprop("/tmp/aroma-data/addstock.prop","item.0.1") == "1"
+then
+ui_print("@Installing Virgin Mobile Connections Optimizer");
+package_extract_dir("applications_stock/conn_optimize_vm", "/system");
+set_progress(0.312);
+endif;
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+set_progress(0.325);
+set_perm(0, 0, 06755, "/system/framework/framework-res.apk");
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Senseless/Apex
+###############################
+
+if 
+file_getprop("/tmp/aroma-data/romtype.prop","selected.0") != "1"
+then
+ui_print("");
+ui_print("@Removing Useless Sense Apks");
+delete("/system/app/AppSharing.apk");
+delete("/system/app/BackupRestoreConfirmation.apk");
+delete("/system/app/Bluetooth.apk");
+delete("/system/app/ChromeBookmarksSyncAdapter.apk");
+delete("/system/app/com.htc.FMRadioWidget.apk");
+delete("/system/app/com.htc.FriendStream3DWidget.apk");
+delete("/system/app/com.htc.htcmsgwidgets3d.apk");
+delete("/system/app/com.htc.idlescreen_SN.apk");
+delete("/system/app/com.htc.MusicWidget.apk");
+delete("/system/app/com.htc.Sync3DWidget.apk");
+delete("/system/app/com.htc.Task3DWidget.apk");
+delete("/system/app/DFPI.apk");
+delete("/system/app/FriendStream.apk");
+delete("/system/app/Fusion.apk");
+delete("/system/app/HtcAutoRotateWidget.apk");
+delete("/system/app/HtcBackgroundDataWidget.apk");
+delete("/system/app/htcbookmarkwidget3d.apk");
+delete("/system/app/HtcCalculatorWidget.apk");
+delete("/system/app/htccalendarwidgets3d.apk");
+delete("/system/app/HtcClock3DWidget.apk");
+delete("/system/app/HtcConnectedMedia.apk");
+delete("/system/app/htccontactwidgets3D.apk");
+delete("/system/app/HtcLocationPicker.apk");
+delete("/system/app/htcmailwidgets3d.apk");
+delete("/system/app/HtcMediaCacheService.apk");
+delete("/system/app/HtcPhotoWidget.apk");
+delete("/system/app/HtcPowerStripWidget.apk");
+delete("/system/app/HtcProfileWidget.apk");
+delete("/system/app/HtcResetNotify.apk");
+delete("/system/app/HtcRingtoneTrimmer.apk");
+delete("/system/app/HtcRingtoneWidget.apk");
+delete("/system/app/HtcScreenBrightnessWidget.apk");
+delete("/system/app/HtcScreenTimeoutWidget.apk");
+delete("/system/app/htcsettingwidgets.apk");
+delete("/system/app/HtcSoundRecorder.apk");
+delete("/system/app/HtcStore.apk");
+delete("/system/app/HtcStoreWidget.apk");
+delete("/system/app/HTCSync.apk");
+delete("/system/app/HtcWeather3DWidget.apk");
+delete("/system/app/HtcWeatherWallpaper.apk");
+delete("/system/app/HTMLViewer.apk");
+delete("/system/app/idlescreen_photo.apk");
+delete("/system/app/IdleScreen_Weather.apk");
+delete("/system/app/LMW.apk");
+delete("/system/app/MyHTC.apk");
+delete("/system/app/MyHTCCSEngine.apk");
+delete("/system/app/MySketcher.apk");
+delete("/system/app/MyTask.apk");
+delete("/system/app/OMADMTool.apk");
+delete("/system/app/OneTimeInitializer.apk");
+delete("/system/app/PrivInit.apk");
+delete("/system/app/Rosie.apk");
+delete("/system/app/SDCardWizard.apk");
+delete("/system/app/TaskManager.apk");
+delete("/system/app/TrimIt.apk");
+delete("/system/app/VoiceDialer.apk");
+delete("/system/app/VoiceSearch.apk");
+delete("/system/app/VpnDialogs.apk");
+delete("/system/app/WatchApp.apk");
+delete("/system/app/Weather.apk");
+delete("/system/app/WeatherLiveWallpaper.apk");
+delete("/system/app/WeatherProvider.apk");
+delete("/system/app/WeatherSyncProvider.apk");
+delete("/system/app/WeatherVideo.apk");
+delete("/system/app/WifiRouter.apk");
+delete("/system/app/WorldClock.apk");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+set_progress(0.350);
+
+if 
+file_getprop("/tmp/aroma-data/romtype.prop","selected.0") == "2"
+then
+ui_print("");
+ui_print("@Installing Apex Launcher And Extras");
+package_extract_dir("senseless/apex/system", "/system");
+package_extract_dir("senseless/apex/sdcard", "/sdcard");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+
+if 
+file_getprop("/tmp/aroma-data/romtype.prop","selected.0") == "3"
+then
+ui_print("");
+ui_print("@Installing Go Launcher And Extras");
+package_extract_dir("senseless/go_launcher/system", "/system");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+
+if 
+file_getprop("/tmp/aroma-data/romtype.prop","selected.0") == "4"
+then
+ui_print("");
+ui_print("@Installing Nova Launcher And Extras");
+package_extract_dir("senseless/nova/system", "/system");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+
+if 
+file_getprop("/tmp/aroma-data/romtype.prop","selected.0") == "5"
+then
+ui_print("");
+ui_print("@Blank Rom Setup");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+set_progress(0.365);
+
+if 
+file_getprop("/tmp/aroma-data/romtype.prop","selected.0") == "6"
+then
+ui_print("");
+ui_print("@Tablet Mode");
+delete("/system/app/Calendar.apk");
+delete("/system/app/CalendarProvider.apk");
+delete("/system/app/ContactsProvider.apk");
+delete("/system/app/EPST.apk");
+delete("/system/app/FieldTrial.apk");
+delete("/system/app/HtcBackgroundDataWidget.apk");
+delete("/system/app/HtcContacts.apk");
+delete("/system/app/htccontactwidgets3D.apk");
+delete("/system/app/HtcDialer.apk");
+delete("/system/app/htcmailwidgets3d.apk");
+delete("/system/app/HtcMessageProvider.apk");
+delete("/system/app/HtcMessageUploader.apk");
+delete("/system/app/HtcSprintService.apk");
+delete("/system/app/Mail.apk");
+delete("/system/app/Mms.apk");
+delete("/system/app/NetworkLocation.apk");
+delete("/system/app/Phone.apk");
+delete("/system/app/PrivInit.apk");
+delete("/system/app/TelephonyProvider.apk");
+delete("/system/app/Usage.apk");
+delete("/system/app/VoiceDialer.apk");
+delete("/system/app/com.coremobility.app.vnotes.apk");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+set_progress(0.370);
+
+if
+file_getprop("/tmp/aroma-data/widget.prop","selected.0") == "1"
+then
+ui_print("");
+ui_print("@Including Fancy Sense Widgets");
+package_extract_dir("senseless/optional", "/system");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+endif;
+set_progress(0.375);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# HTC Stock Optional Installation
+###############################
+
+if
+file_getprop("/tmp/aroma-data/addstock.prop","item.0.2") == "1"
+then
+ui_print("");
+ui_print("@Installing HTC Screenshot");
+package_extract_dir("applications_stock/screenshot", "/system");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+set_progress(0.387);
+endif;
+
+if
+file_getprop("/tmp/aroma-data/addstock.prop","item.0.4") == "1"
+then
+ui_print("");
+ui_print("@Including Stock Internet Browser");
+package_extract_dir("applications_stock/browser", "/system");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+set_progress(0.395);
+endif;
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Add-on App Installation
+###############################
+
+ui_print("");
+ui_print("@Installing Add-on Apps - If Any");
+mount("ext4", "EMMC", "/dev/block/mmcblk0p24", "/data");
+
+run_program("/tmp/makedata.sh");
+run_program("/sbin/sleep", "1");
+
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.1") == "1"
+then
+ui_print("@-Installing Ad-Away");
+package_extract_file("applications_data/org.adaway.apk", "/data/app/org.adaway.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.2") == "1"
+then
+ui_print("@-Installing Adobe Reader");
+package_extract_file("applications_data/com.adobe.reader.apk", "/data/app/com.adobe.reader.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.3") == "1"
+then
+ui_print("@-Installing Android Terminal");
+package_extract_file("applications_data/jackpal.androidterm.apk", "/data/app/jackpal.androidterm.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.4") == "1"
+then
+ui_print("@-Installing Cache Cleaner NG");
+package_extract_file("applications_system/org.lsartory.cachecleaner.ng.apk", "/system/app/org.lsartory.cachecleaner.ng.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.5") == "1"
+then
+ui_print("@-Installing Dolby Mobile");
+package_extract_file("applications_system/com.krabappel2548.dolbymobile.apk", "/system/app/com.krabappel2548.dolbymobile.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.6") == "1"
+then
+ui_print("@-Installing FX File Explorer");
+package_extract_file("applications_system/nextapp.fx.apk", "/system/app/nextapp.fx.apk");
+package_extract_file("applications_system/nextapp.fx.rr.apk", "/system/app/nextapp.fx.rr.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.7") == "1"
+then
+ui_print("@-Installing Facebook");
+package_extract_file("applications_system/com.facebook.katana.apk", "/system/app/com.facebook.katana.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.8") == "1"
+then
+ui_print("@-Installing Facebook Home");
+package_extract_file("applications_system/com.facebook.home.apk", "/system/app/com.facebook.home.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.9") == "1"
+then
+ui_print("@-Installing Flashplayer");
+package_extract_file("applications_data/com.adobe.flashplayer.apk", "/data/app/com.adobe.flashplayer.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.10") == "1"
+then
+ui_print("@-Installing Google Chrome");
+package_extract_file("applications_data/com.android.chrome.apk", "/data/app/com.android.chrome.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.11") == "1"
+then
+ui_print("@-Installing Google+");
+package_extract_file("applications_data/com.google.android.apps.plus.apk", "/data/app/com.google.android.apps.plus.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.12") == "1"
+then
+ui_print("@-Installing Google Mail");
+package_extract_file("applications_system/com.google.android.gm.apk", "/system/app/com.google.android.gm.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.13") == "1"
+then
+ui_print("@-Installing Google Maps");
+package_extract_file("applications_system/com.google.android.apps.maps.apk", "/system/app/com.google.android.apps.maps.apk");
+package_extract_file("applications_system/com.google.android.street.apk", "/system/app/com.google.android.street.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.14") == "1"
+then
+ui_print("@-Installing Google Mobile Services");
+package_extract_file("applications_system/com.google.android.gms.apk", "/data/app/com.google.android.gms.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.15") == "1"
+then
+ui_print("@-Installing Google Play Music");
+package_extract_file("applications_system/com.google.android.music.apk", "/system/app/com.google.android.music.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.16") == "1"
+then
+ui_print("@-Installing Google Videos");
+package_extract_file("applications_system/com.google.android.videos.apk", "/system/app/com.google.android.videos.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.17") == "1"
+then
+ui_print("@-Installing Google Voice");
+package_extract_file("applications_system/com.google.android.apps.googlevoice.apk", "/system/app/com.google.android.apps.googlevoice.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.18") == "1"
+then
+ui_print("@-Installing Kernel Tuner");
+package_extract_file("applications_system/rs.pedjaapps.KernelTuner.apk", "/system/app/rs.pedjaapps.KernelTuner.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.19") == "1"
+then
+ui_print("@-Installing MX Player");
+package_extract_file("applications_system/com.mxtech.videoplayer.ad.apk", "/system/app/com.mxtech.videoplayer.ad.apk");
+package_extract_file("applications_data/com.mxtech.ffmpeg.v7_neon.apk", "/data/app/com.mxtech.ffmpeg.v7_neon.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.20") == "1"
+then
+ui_print("@-Installing Mobile SVN");
+package_extract_file("applications_system/de.dogcraft.mobile.svn.api8.lite.apk", "/system/app/de.dogcraft.mobile.svn.api8.lite.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.21") == "1"
+then
+ui_print("@-Installing ViperFX EQ");
+package_extract_file("applications_system/viper_fx/ViPER4Android_FX.apk", "/system/app/ViPER4Android_FX.apk");
+package_extract_dir("applications_system/viper_fx/sdcard", "/sdcard");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.22") == "1"
+then
+ui_print("@-Installing Playstation Mobile");
+package_extract_file("applications_data/com.playstation.psstore.apk", "/data/app/com.playstation.psstore.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.23") == "1"
+then
+ui_print("@-Installing Script-Manager");
+package_extract_file("applications_system/os.tools.scriptmanager.apk", "/system/app/os.tools.scriptmanager.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.24") == "1"
+then
+ui_print("@-Installing StickMount OTG");
+package_extract_file("applications_system/eu.chainfire.stickmount.apk", "/system/app/eu.chainfire.stickmount.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.25") == "1"
+then
+ui_print("@-Installing System Tuner");
+package_extract_file("applications_system/ccc71.pmw.apk", "/system/app/ccc71.pmw.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.26") == "1"
+then
+ui_print("@-Installing Titanium Backup");
+package_extract_file("applications_system/com.keramidas.TitaniumBackup.apk", "/system/app/com.keramidas.TitaniumBackup.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.27") == "1"
+then
+ui_print("@-Installing Ultimate Backup");
+package_extract_file("applications_system/com.jrummy.app.managerfree.apk", "/system/app/com.jrummy.app.managerfree.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.28") == "1"
+then
+ui_print("@-Installing USB OTG Helper");
+package_extract_file("applications_system/net.shajul.usbotg.apk", "/system/app/net.shajul.usbotg.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.29") == "1"
+then
+ui_print("@-Installing Volume Sync");
+package_extract_file("applications_system/com.jestasfunhouse.volumesync.apk", "/system/app/com.jestasfunhouse.volumesync.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.30") == "1"
+then
+ui_print("@-Installing Wifi Tether");
+package_extract_file("applications_data/com.googlecode.android.wifi.tether.apk", "/data/app/com.googlecode.android.wifi.tether.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.31") == "1"
+then
+ui_print("@-Installing YouTube");
+package_extract_file("applications_system/com.google.android.youtube.apk", "/system/app/com.google.android.youtube.apk");
+endif;
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+set_progress(0.400);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Optional App Installation
+###############################
+
+if
+file_getprop("/tmp/aroma-data/stock.prop","selected.0") == "1"
+then
+ui_print("");
+ui_print("@Installing All Optional Stock Files");
+package_extract_dir("applications_optional", "/system");
+package_extract_dir("sound_optional", "/system");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+set_progress(0.425);
+endif;
+
+if
+file_getprop("/tmp/aroma-data/stock.prop","selected.0") == "2"
+then
+ui_print("");
+ui_print("@Installing Hand-Picked Optional Stock File Selections");
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.1") == "1"
+then
+ui_print("@-Installing All Sounds");
+package_extract_dir("sound_optional/media", "/system/media");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.2") == "1"
+then
+ui_print("@Installing All Wallpapers");
+package_extract_file("applications_optional/app/HoloSpiralWallpaper.apk", "/system/app/HoloSpiralWallpaper.apk");
+package_extract_file("applications_optional/app/HtcImageWallpaper.apk", "/system/app/HtcImageWallpaper.apk");
+package_extract_file("applications_optional/app/HTCLivewallpaperStreak.apk", "/system/app/HTCLivewallpaperStreak.apk");
+package_extract_file("applications_optional/app/LiveWallpapers.apk", "/system/app/LiveWallpapers.apk");
+package_extract_file("applications_optional/app/MagicSmokeWallpapers.apk", "/system/app/MagicSmokeWallpapers.apk");
+package_extract_file("applications_optional/app/Mode10Wallpapers.apk", "/system/app/Mode10Wallpapers.apk");
+package_extract_file("applications_optional/app/NoiseField.apk", "/system/app/NoiseField.apk");
+package_extract_file("applications_optional/app/PhaseBeam.apk", "/system/app/PhaseBeam.apk");
+package_extract_file("applications_optional/app/VisualizationWallpapers.apk", "/system/app/VisualizationWallpapers.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.3") == "1"
+then
+ui_print("@-Installing Amazon MP3");
+package_extract_file("applications_optional/app/amazonmp3.apk", "/system/app/amazonmp3.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.4") == "1"
+then
+ui_print("@-Installing Blockbuster");
+package_extract_file("applications_optional/app/Blockbuster.apk", "/system/app/Blockbuster.apk");
+package_extract_file("applications_optional/etc/permissions/com.blockbuster.lib.htc.xml", "/system/etc/permissions/com.blockbuster.lib.htc.xml");
+package_extract_file("applications_optional/framework/com.blockbuster.lib.htc.jar", "/system/framework/com.blockbuster.lib.htc.jar");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.5") == "1"
+then
+ui_print("@-Installing DockMode");
+package_extract_file("applications_optional/app/DockMode.apk", "/system/app/DockMode.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.6") == "1"
+then
+ui_print("@-Installing EReader");
+package_extract_file("applications_optional/app/EReader.apk", "/system/app/EReader.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.7") == "1"
+then
+ui_print("@-Installing FaceLock");
+package_extract_file("applications_optional/app/FaceLock.apk", "/system/app/FaceLock.apk");
+package_extract_dir("applications_optional/vendor", "/system/vendor");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.8") == "1"
+then
+ui_print("@-Installing Flickr");
+package_extract_file("applications_optional/app/Flickr.apk", "/system/app/Flickr.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.9") == "1"
+then
+ui_print("@-Installing HTC Car Panel");
+package_extract_file("applications_optional/app/HtcCarPanel.apk", "/system/app/HtcCarPanel.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.10") == "1"
+then
+ui_print("@-Installing HTC Caompress Viewer");
+package_extract_file("applications_optional/app/HtcCompressViewer.apk", "/system/app/HtcCompressViewer.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.11") == "1"
+then
+ui_print("@-Installing HTC Data Roaming Widget");
+package_extract_file("applications_optional/app/HtcDataRoamingWidget.apk", "/system/app/HtcDataRoamingWidget.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.12") == "1"
+then
+ui_print("@-Installing HTC Data Strip Widget");
+package_extract_file("applications_optional/app/HtcDataStripWidget.apk", "/system/app/HtcDataStripWidget.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.13") == "1"
+then
+ui_print("@-Installing HTC FM Radio");
+package_extract_file("applications_optional/app/HtcFMRadio.apk", "/system/app/HtcFMRadio.apk");
+package_extract_file("applications_optional/app/com.htc.FMRadioWidget.apk", "/system/app/com.htc.FMRadioWidget.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.14") == "1"
+then
+ui_print("@-Installing HTC Footprints");
+package_extract_file("applications_optional/app/HtcFootprints.apk", "/system/app/HtcFootprints.apk");
+package_extract_file("applications_optional/app/HtcFootprintsWidget3d.apk", "/system/app/HtcFootprintsWidget3d.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.15") == "1"
+then
+ui_print("@-Installing HTC Notes");
+package_extract_file("applications_optional/app/HtcNotes.apk", "/system/app/HtcNotes.apk");
+package_extract_file("applications_optional/app/HtcNotesProvider.apk", "/system/app/HtcNotesProvider.apk");
+package_extract_file("applications_optional/app/HtcRichNotesWidget3D.apk", "/system/app/HtcRichNotesWidget3D.apk");
+package_extract_file("applications_optional/lib/libnotes_jni.so", "/system/lib/libnotes_jni.so");
+package_extract_file("applications_optional/lib/libnotesprovider_jni.so", "/system/lib/libnotesprovider_jni.so");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.16") == "1"
+then
+ui_print("@-Installing HTC Watch");
+package_extract_file("applications_optional/app/htcwatchwidget3d.apk", "/system/app/htcwatchwidget3d.apk");
+package_extract_file("applications_optional/app/WatchApp.apk", "/system/app/WatchApp.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.17") == "1"
+then
+ui_print("@-Installing JetCet Print");
+package_extract_file("applications_optional/app/JETCET_PRINT.apk", "/system/app/JETCET_PRINT.apk");
+package_extract_file("applications_optional/app/JETCET_PRINT_Resources.apk", "/system/app/JETCET_PRINT_Resources.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.18") == "1"
+then
+ui_print("@-Installing MyShelf Widget");
+package_extract_file("applications_optional/app/MyShelf_Widget.apk", "/system/app/MyShelf_Widget.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.19") == "1"
+then
+ui_print("@-Installing News");
+package_extract_file("applications_optional/app/GenieWidget.apk", "/system/app/GenieWidget.apk");
+package_extract_file("applications_optional/app/HtcGreader.apk", "/system/app/HtcGreader.apk");
+package_extract_file("applications_optional/app/HtcGreaderWidget.apk", "/system/app/HtcGreaderWidget.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.20") == "1"
+then
+ui_print("@-Installing Nascar Sprint");
+package_extract_file("applications_optional/app/NscmStub.apk", "/system/app/NscmStub.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.21") == "1"
+then
+ui_print("@-Installing Picasa");
+package_extract_file("applications_optional/app/picasapryramid.apk", "/system/app/picasapryramid.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.22") == "1"
+then
+ui_print("@-Installing Polaris Office");
+package_extract_file("applications_optional/app/PolarisOffice.apk", "/system/app/PolarisOffice.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.23") == "1"
+then
+ui_print("@-Installing Sprint Mobile Wallet");
+package_extract_file("applications_optional/app/SMPSClient1.6_01112012.apk", "/system/app/SMPSClient1.6_01112012.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.24") == "1"
+then
+ui_print("@-Installing Sprint TV");
+package_extract_file("applications_optional/app/SprintTV-SmartStubV11_New_Cert.apk", "/system/app/SprintTV-SmartStubV11_New_Cert.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.25") == "1"
+then
+ui_print("@-Installing Sprint Zone");
+package_extract_file("applications_optional/app/SprintZone2531.apk", "/system/app/SprintZone2531.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.26") == "1"
+then
+ui_print("@-Installing Stocks");
+package_extract_file("applications_optional/app/Stock.apk", "/system/app/Stock.apk");
+package_extract_file("applications_optional/app/DCSStock.apk", "/system/app/DCSStock.apk");
+package_extract_file("applications_optional/app/FusionStockWidget.apk", "/system/app/FusionStockWidget.apk");
+package_extract_file("applications_optional/app/IdleScreen_Stock.apk", "/system/app/IdleScreen_Stock.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.27") == "1"
+then
+ui_print("@-Installing Swype Keyboard");
+package_extract_file("applications_optional/app/Swype.apk", "/system/app/Swype.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.28") == "1"
+then
+ui_print("@-Installing Talkback");
+package_extract_file("applications_optional/app/talkback.apk", "/system/app/talkback.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.29") == "1"
+then
+ui_print("@-Installing Transfer Rider");
+package_extract_file("applications_optional/app/Transfer-rider-8.35.0.35-ICS-S35-released.apk", "/system/app/Transfer-rider-8.35.0.35-ICS-S35-released.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.30") == "1"
+then
+ui_print("@-Installing Trends Widget");
+package_extract_file("applications_optional/app/com.htc.TrendsWidget.apk", "/system/app/com.htc.TrendsWidget.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/optional.prop","item.0.31") == "1"
+then
+ui_print("@-Installing Trends Widget");
+package_extract_file("applications_optional/app/HtcTwitter.apk", "/system/app/HtcTwitter.apk");
+package_extract_file("applications_optional/app/com.htc.Twitter3DWidget.apk", "/system/app/com.htc.Twitter3DWidget.apk");
+endif;
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+set_progress(0.450);
+endif;
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Superuser Installation
+###############################
+
+ui_print("");
+ui_print("@Installing SuperUser Option");
+if 
+file_getprop("/tmp/aroma-data/superuser.prop","selected.0") == "1"
+then
+ui_print("@-Installing CWM Superuser Support");
+package_extract_file("superuser/cwm_superuser/Superuser.apk", "/system/app/Superuser.apk");
+package_extract_file("superuser/cwm_superuser/su", "/system/xbin/su");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+
+if 
+file_getprop("/tmp/aroma-data/superuser.prop","selected.0") == "2"
+then
+ui_print("@-Installing MIUI Security Support");
+package_extract_file("superuser/miui_security/Superuser.apk", "/system/app/Superuser.apk");
+package_extract_file("superuser/miui_security/su", "/system/xbin/su");
+package_extract_file("superuser/miui_security/liblbesec.so", "/system/lib/liblbesec.so");
+package_extract_file("superuser/miui_security/libloader.so", "/system/lib/libloader.so");
+package_extract_file("superuser/miui_security/libservice.so", "/system/lib/libservice.so");
+set_perm(0, 0, 0755, "/system/lib/liblbesec.so");
+set_perm(0, 0, 0755, "/system/lib/libloader.so");
+set_perm(0, 0, 0755, "/system/lib/libservice.so");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+
+if 
+file_getprop("/tmp/aroma-data/superuser.prop","selected.0") == "3"
+then
+ui_print("@-Installing SuperSU Support");
+package_extract_file("superuser/supersu/Superuser.apk", "/system/app/Superuser.apk");
+package_extract_file("superuser/supersu/su", "/system/xbin/su");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+
+if 
+file_getprop("/tmp/aroma-data/superuser.prop","selected.0") == "4"
+then
+ui_print("@-Installing Superuser Support");
+package_extract_file("superuser/superuser/Superuser.apk", "/system/app/Superuser.apk");
+package_extract_file("superuser/superuser/su", "/system/xbin/su");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+set_progress(0.475);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# HTC Facebook And FriendStream Removal
+###############################
+
+if
+file_getprop("/tmp/aroma-data/addstock.prop","item.0.3") == "0"
+then
+ui_print("@Removing HTC Facebook");
+delete("/system/app/HtcFacebook.apk");
+if 
+file_getprop("/tmp/aroma-data/friendstream.prop","selected.0") == "1"
+then
+ui_print("@-Removing FriendStream");
+delete("/system/app/com.htc.FriendStream3DWidget.apk");
+delete("/system/app/FriendStream.apk");
+endif;
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+endif;
+set_progress(0.525);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Kernel Installation
+###############################
+
+ui_print("");
+ui_print("@Installing Buttered Toast Kernel & Modules");
+package_extract_dir("kernel/modules", "/system/lib/modules");
+set_perm(0, 0755, 0644, "/system/lib/modules/bcm4329.ko");
+set_perm(0, 0755, 0644, "/system/lib/modules/bcmdhd.ko");
+set_perm(0, 0755, 0644, "/system/lib/modules/scsi_wait_scan.ko");
+set_perm(0, 0755, 0644, "/system/lib/modules/sequans_sdio.ko");
+package_extract_dir("kernel/kernel", "/tmp");
+set_perm(0, 0, 0777, "/tmp/dd");
+set_perm(0, 0, 0777, "/tmp/mkbootimg");
+set_perm(0, 0, 0777, "/tmp/zImage");
+set_perm(0, 0, 0777, "/tmp/skin_fota");
+set_perm(0, 0, 0777, "/tmp/fotaBoot");
+
+run_program("/tmp/skin_fota");
+
+if 
+file_getprop("/tmp/aroma-data/kernel.prop","selected.0") == "1"
+then
+ui_print("");
+ui_print("@-Setting Up Kernel Maxed Settings");
+run_program("/sbin/busybox", "cp", "/tmp/init.qcom.post_boot_mx.sh", "/system/etc/init.qcom.post_boot.sh");
+set_perm(0, 0, 0777, "/tmp/kernel_settings_mx.sh");
+set_perm(0, 0, 0777, "/tmp/mkbootimg");
+set_perm(0, 0, 0777, "/tmp/unpackbootimg");
+run_program("/tmp/unpackbootimg", "/tmp/boot.img", "/tmp/");
+run_program("/tmp/kernel_settings_mx.sh");	
+endif;
+
+if 
+file_getprop("/tmp/aroma-data/kernel.prop","selected.0") == "2"
+then
+ui_print("");
+ui_print("@-Setting Up Kernel Extreme Settings");
+run_program("/sbin/busybox", "cp", "/tmp/init.qcom.post_boot_ex.sh", "/system/etc/init.qcom.post_boot.sh");
+set_perm(0, 0, 0777, "/tmp/kernel_settings_ex.sh");
+set_perm(0, 0, 0777, "/tmp/mkbootimg");
+set_perm(0, 0, 0777, "/tmp/unpackbootimg");
+run_program("/tmp/unpackbootimg", "/tmp/boot.img", "/tmp/");
+run_program("/tmp/kernel_settings_ex.sh");	
+endif;
+
+if 
+file_getprop("/tmp/aroma-data/kernel.prop","selected.0") == "3"
+then
+ui_print("");
+ui_print("@-Setting Up Kernel Over-Clock Settings");
+run_program("/sbin/busybox", "cp", "/tmp/init.qcom.post_boot_oc.sh", "/system/etc/init.qcom.post_boot.sh");
+set_perm(0, 0, 0777, "/tmp/kernel_settings_oc.sh");
+set_perm(0, 0, 0777, "/tmp/mkbootimg");
+set_perm(0, 0, 0777, "/tmp/unpackbootimg");
+run_program("/tmp/unpackbootimg", "/tmp/boot.img", "/tmp/");
+run_program("/tmp/kernel_settings_oc.sh");	
+endif;
+
+if 
+file_getprop("/tmp/aroma-data/kernel.prop","selected.0") == "4"
+then
+ui_print("");
+ui_print("@-Setting Up Kernel Relaxed Settings");
+run_program("/sbin/busybox", "cp", "/tmp/init.qcom.post_boot_rl.sh", "/system/etc/init.qcom.post_boot.sh");
+set_perm(0, 0, 0777, "/tmp/kernel_settings_rl.sh");
+set_perm(0, 0, 0777, "/tmp/mkbootimg");
+set_perm(0, 0, 0777, "/tmp/unpackbootimg");
+run_program("/tmp/unpackbootimg", "/tmp/boot.img", "/tmp/");
+run_program("/tmp/kernel_settings_rl.sh");
+endif;
+
+if 
+file_getprop("/tmp/aroma-data/kernel.prop","selected.0") == "5"
+then
+ui_print("");
+ui_print("@-Setting Up Kernel Under-Clock Settings");
+run_program("/sbin/busybox", "cp", "/tmp/init.qcom.post_boot_uc.sh", "/system/etc/init.qcom.post_boot.sh");
+set_perm(0, 0, 0777, "/tmp/kernel_settings_uc.sh");
+set_perm(0, 0, 0777, "/tmp/mkbootimg");
+set_perm(0, 0, 0777, "/tmp/unpackbootimg");
+run_program("/tmp/unpackbootimg", "/tmp/boot.img", "/tmp/");
+run_program("/tmp/kernel_settings_uc.sh");
+endif;
+set_progress(0.575);
+
+ui_print("");
+delete("/tmp/boot.img");
+run_program("/sbin/sleep", "1");
+assert(write_raw_image("/tmp/newboot.img", "boot"),
+       delete("/tmp/boot.img"));
+run_program("/sbin/sleep", "1");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+set_progress(0.600);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# SymLinks
+###############################
+
+ui_print("");
+ui_print("@Creating Symlinks");
+symlink("dumpstate", "/system/bin/dumpcrash");
+symlink("/factory/hdcp.keys", "/system/vendor/firmware/hdcp.keys");
+symlink("/system/bin/mksh", "/system/bin/sh");
+set_perm(1000, 1000, 0755, "/system/xbin/openvpn");
+symlink("/proc/calibration", "/system/etc/calibration");
+symlink("/proc/mounts", "/system/etc/mtab");
+symlink("/system/xbin/su","/system/bin/su");
+symlink("/system/xbin/zip","/system/bin/zip");
+symlink("/system/xbin/zipalign","/system/bin/zipalign");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+set_progress(0.650);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Toolbox
+###############################
+
+ui_print("@Installing Toolbox");
+package_extract_file("setup/toolbox", "/system/bin/toolbox");
+set_perm(0, 2000, 0755, "/system/bin/toolbox");
+set_progress(0.675);
+ui_print("@-Symlinking Toolbox");
+symlink("dumpstate", "/system/bin/dumpcrash");
+symlink("toolbox", "/system/bin/cat");
+symlink("toolbox", "/system/bin/chmod");
+symlink("toolbox", "/system/bin/chown");
+symlink("toolbox", "/system/bin/cmp");
+symlink("toolbox", "/system/bin/date");
+symlink("toolbox", "/system/bin/dd");
+symlink("toolbox", "/system/bin/df");
+symlink("toolbox", "/system/bin/dmesg");
+symlink("toolbox", "/system/bin/getevent");
+symlink("toolbox", "/system/bin/getprop");
+symlink("toolbox", "/system/bin/hd");
+symlink("toolbox", "/system/bin/id");
+symlink("toolbox", "/system/bin/ifconfig");
+symlink("toolbox", "/system/bin/iftop");
+symlink("toolbox", "/system/bin/insmod");
+symlink("toolbox", "/system/bin/ioctl");
+symlink("toolbox", "/system/bin/ionice");
+symlink("toolbox", "/system/bin/kill");
+symlink("toolbox", "/system/bin/ln");
+symlink("toolbox", "/system/bin/log");
+symlink("toolbox", "/system/bin/ls");
+symlink("toolbox", "/system/bin/lsmod");
+symlink("toolbox", "/system/bin/lsof");
+symlink("toolbox", "/system/bin/mkdir");
+symlink("toolbox", "/system/bin/mount");
+symlink("toolbox", "/system/bin/mv");
+symlink("toolbox", "/system/bin/nandread");
+symlink("toolbox", "/system/bin/netstat");
+symlink("toolbox", "/system/bin/newfs_msdos");
+symlink("toolbox", "/system/bin/notify");
+symlink("toolbox", "/system/bin/printenv");
+symlink("toolbox", "/system/bin/ps");
+symlink("toolbox", "/system/bin/renice");
+symlink("toolbox", "/system/bin/rm");
+symlink("toolbox", "/system/bin/rmdir");
+symlink("toolbox", "/system/bin/rmmod");
+symlink("toolbox", "/system/bin/route");
+symlink("toolbox", "/system/bin/schedtop");
+symlink("toolbox", "/system/bin/sendevent");
+symlink("toolbox", "/system/bin/setconsole");
+symlink("toolbox", "/system/bin/setprop");
+symlink("toolbox", "/system/bin/sleep");
+symlink("toolbox", "/system/bin/smd");
+symlink("toolbox", "/system/bin/start");
+symlink("toolbox", "/system/bin/stop");
+symlink("toolbox", "/system/bin/sync");
+symlink("toolbox", "/system/bin/top");
+symlink("toolbox", "/system/bin/touch");
+symlink("toolbox", "/system/bin/umount");
+symlink("toolbox", "/system/bin/uptime");
+symlink("toolbox", "/system/bin/vmstat");
+symlink("toolbox", "/system/bin/watchprops");
+symlink("toolbox", "/system/bin/wipe");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+set_progress(0.700);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# BusyBox
+###############################
+
+ui_print("@Installing Busybox");
+set_perm(0, 1000, 0755, "/system/xbin/busybox");
+run_program("/system/xbin/busybox", "--install", "-s", "/system/xbin");
+run_program("/tmp/busybox.sh", "");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+set_progress(0.750);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Permissions
+###############################
+
+ui_print("");
+ui_print("@Setting Permissions");
+set_perm(1000, 1000, 0771, "/data");
+set_perm_recursive(1000, 1000, 0771, 0644, "/data/app");
+set_perm_recursive(1000, 1000, 0771, 0644, "/data/local");
+set_perm_recursive(0, 0, 0755, 0644, "/system");
+set_perm_recursive(0, 2000, 0755, 0755, "/system/bin");
+set_perm_recursive(0, 2000, 0755, 0755, "/system/xbin");
+set_perm(0, 1000, 04750, "/system/bin/iptables");
+set_perm(0, 3003, 02750, "/system/bin/netcfg");
+set_perm(0, 3004, 02755, "/system/bin/ping");
+set_perm(0, 2000, 06755, "/system/bin/reboot");
+set_perm(0, 2000, 06750, "/system/bin/run-as");
+set_perm(0, 1000, 04750, "/system/bin/tc");
+set_perm(0, 2000, 06755, "/system/bin/bootanimation");
+set_perm(0, 2000, 06750, "/system/bin/run-as");
+set_perm_recursive(1002, 1002, 0755, 0440, "/system/etc/bluetooth");
+set_perm(0, 0, 0755, "/system/etc/bluetooth");
+set_perm(1000, 1000, 0640, "/system/etc/bluetooth/auto_pairing.conf");
+set_perm(3002, 3002, 0444, "/system/etc/bluetooth/blacklist.conf");
+set_perm(1002, 1002, 0440, "/system/etc/dbus.conf");
+set_perm(1014, 2000, 0550, "/system/etc/dhcpcd/dhcpcd-run-hooks");
+set_perm(0, 2000, 0550, "/system/etc/init.goldfish.sh");
+set_perm(0, 0, 0777, "/system/etc/init.qcom.post_boot.sh"); 
+set_perm(1000, 1000, 0555, "/system/etc/init.qcom.sdio.sh");
+set_perm_recursive(0, 0, 0755, 0555, "/system/etc/ppp");
+set_perm_recursive(0, 2000, 0777, 0777, "/system/etc/init.d");
+set_perm(0, 0755, 0644, "/system/app/Velvet.apk");
+set_perm(0, 0755, 0644, "/system/app/GoogleTTS.apk");
+set_perm(0, 0755, 0644, "system/lib/libgoogle_recognizer_jni.so");
+set_perm(0, 0755, 0644, "system/lib/libpatts_engine_jni_api.so");
+set_perm(0, 0755, 0644, "system/lib/libspeexwrapper.so");
+set_perm(0, 0755, 0644, "system/lib/libvorbisencoder.so");
+set_perm_recursive(0, 0, 0755, 0644, "/system/usr/srec/config");
+set_perm_recursive(0, 0, 0755, 0644, "/system/usr/srec/en-US");
+set_perm(0, 0, 0755, "/system/etc/be_movie");
+set_perm(0, 0, 0755, "/system/etc/be_photo");
+set_perm_recursive(0, 0, 0755, 0644, "/system/framework");
+set_perm(0, 0, 0755, "/system/lib/libaudioeffect_jni.so");
+set_perm(0, 0, 0755, "/system/lib/libaudioeq.so");
+set_perm_recursive(0, 0, 0755, 0644, "/system/lib/soundfx");
+set_perm(0, 0, 06755, "/system/xbin/dexdump");
+set_perm(0, 2000, 0755, "/system/xbin/sqlite3");
+set_perm(0, 0, 06755, "/system/xbin/wireless_modem");
+set_perm(0, 0, 06755, "/system/xbin/zipalign");
+set_perm(0, 0, 06755, "/system/xbin/zip");
+set_perm(0, 0, 06755, "/system/bin/su");
+set_perm(0, 0, 06755, "/system/xbin/su");
+set_perm(0, 0, 06755, "/system/etc/sysctl.conf");
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+set_progress(0.800);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Cache Cleanup
+###############################
+
+ui_print("@Cleaning Cache");
+format("ext4", "EMMC", "/dev/block/mmcblk0p25", "0", "/cache");
+ifelse(is_mounted("/cache") == "/cache", unmount("/cache"));
+run_program("/tmp/fsck.ext4", "-fy", "/dev/block/mmcblk0p25");
+run_program("/tmp/mkfs.ext4", "-O", "^ext_attr,^has_journal,^huge_file", "-L", "CACHE", "-b", "4096", "-m", "0", "-F", "/dev/block/mmcblk0p25");
+run_program("/tmp/tune2fs.ext4", "-c", "1", "-m", "0", "-o", "journal_data_writeback", "/dev/block/mmcblk0p25");
+run_program("/tmp/fsck.ext4", "-Dfy", "/dev/block/mmcblk0p25");
+delete_recursive("/data/dalvik-cache");	
+ui_print("Done");
+run_program("/sbin/sleep", "1");
+set_progress(0.900);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Unmount Partitions
+###############################
+
+ui_print("");
+ui_print("@Unmounting Partitions");
+ifelse(is_mounted("/system") == "/system", unmount("/system"));
+ifelse(is_mounted("/data") == "/data", unmount("/data"));
+run_program("/sbin/sleep", "1");
+ui_print("Done");
+set_progress(1.0);
+ui_print("@Install Finished");
+
+###############################
+# END
+###############################

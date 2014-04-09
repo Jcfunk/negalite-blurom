@@ -1,0 +1,6 @@
+TaskID : 307893
+Project : Shooter_ICS_35_S
+SKU : Sprint WWE[651]
+ROM Ver : 2.95.651.5
+Customization Id : 460015
+RCMS Id : 197

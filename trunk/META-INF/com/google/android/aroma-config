@@ -1,0 +1,594 @@
+###############################
+# Aroma Theme
+###############################
+
+ini_set("force_colorspace","rgba");
+
+theme("ics");
+
+###############################
+# Welcome Splash
+###############################
+
+splash(4000, "blurom");
+
+###############################
+# Font Size
+###############################
+
+loadlang("langs/en.lang");
+fontresload( "0", "ttf/Roboto-Regular.ttf;ttf/DroidSansFallback.ttf;", "10" );
+fontresload( "1", "ttf/Roboto-Regular.ttf;ttf/DroidSansFallback.ttf;", "14" );
+
+###############################
+# Name Variables
+###############################
+
+ini_set("rom_name",             "NegaLite BluRom");
+ini_set("rom_version",          "SVN Series");
+ini_set("rom_author",           "Negamann303");
+ini_set("rom_device",           "HTC SHOOTER");
+
+###############################
+# Screen Calibration
+###############################
+
+calibrate("1.6834","18","0.9457","25");
+
+###############################
+# Aroma Script by Negamann303
+###############################
+#------------------------------
+###############################
+# Welcome Screen
+###############################
+
+viewbox(
+	"Welcome",
+	"\n\n\n\n\n"+
+	"You Are About To Flash\n"+
+	ini_get("rom_name") + " \nBy\n" + ini_get("rom_author") +  
+	"\n\n\n"+
+	"Version: <#080>" + ini_get("rom_version") + "</#>\n"+
+	"Device: <#080>" + ini_get("rom_device") + "</#>\n\n\n"+
+	"Press Next To Continue The Installation...",
+	"icons/personalize"
+);
+ 
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Restore Options Check
+###############################
+
+#############################################################
+# Backup/Restore System Co-developed by Ramjet73
+#############################################################
+
+zipexec("setup/chkdir.sh");
+setvar("chkdir",read("/tmp/chkdir.txt"));
+if (getvar("chkdir") == "yes")  
+	then
+	selectbox(
+	"Aroma Backup Detection",
+	"Aroma Backup Detected! Would You Like To Restore Your Previous Installation Options?",
+	"icons/personalize",
+	"restore.prop",
+	"Yes","Use My Previous Installation Options",1,
+	"Modify/Review","Modify Or Review My Previous Installation Options",0,
+	"No","No Thanks, I'm Starting Over",0
+	); 
+ 
+	if
+		file_getprop("/tmp/aroma-data/restore.prop","selected.0") != "3"
+	then
+		zipexec("setup/restore.sh");
+	endif;
+endif;
+ 
+if
+	file_getprop("/tmp/aroma-data/restore.prop","selected.0") == "2"
+then 
+	ini_set("text_next", "Modify");
+	
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Review
+###############################	
+
+	if 
+		zipexec("setup/review.sh") == "0"
+	then
+		setcolor("textfg", "#09f");
+		exec("/sbin/sleep", "1");	
+		textbox(
+			"Review And Modify",
+			"Press 'Modify' To Modify Your Backup Options And Install, Or 'Back' For Other Options",
+			"icons/info",
+			read("/tmp/review.txt")
+		);
+	endif;	
+	ini_set("text_next", "Next");
+	setcolor("textfg", "#fff");
+endif;
+ 
+if
+	file_getprop("/tmp/aroma-data/restore.prop","selected.0") != "1"
+then
+ 
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Wipe Options
+###############################
+ 
+	selectbox(
+		"Wipe Options",
+		"Would You Like To Wipe First?",
+		"icons/wipe",
+		"wipe_select.prop",
+	
+		"Yes","Please Do!",1,
+		"No","No Thanks, I Already Wiped In Recovery",0
+	);
+	
+	if
+		file_getprop("/tmp/aroma-data/wipe_select.prop","selected.0") == "1"
+	then 
+		checkbox(
+			"Wipe Options",
+			"Please Select Your Options And Press 'Next' To Continue:",
+			"icons/wipe",
+			"wipe.prop",
+		  
+			"Wipe Boot",          "This Will Wipe The 'Boot' Partition",1,
+			"Wipe Data",          "This Will Wipe The 'Data' Partition",1,
+			"Wipe SD-Ext",        "This Will Wipe The 'SD-Ext' Partitions",1,
+			"Wipe Old SD",        "This Will Wipe The Old System SD Files",1
+		);
+	endif;
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Rom Version Options
+###############################
+
+	appendvar("installmsg","\n\nPlease Select Installation Type Below:");
+	
+	selectbox(
+		"Rom Install Selection:",
+		"Choose Which Launcher You Would Like",
+		"icons/personalize",
+		"romtype.prop",
+	
+		"BluRom - Sense","Installs The Rom With Sense Launcher",1,
+		"BluRom - Apex","Installs The Rom With Apex Launcher",0,
+		"BluRom - Go","Installs The Rom With Go Launcher",0,
+		"BluRom - Nova","Installs The Rom With Nova Launcher",0,
+		"None","Installs The Rom With A Blank Slate",0,
+		"Tablet Mode","This Removes All Service Provider Functionality",0
+	);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Senseless Options
+###############################
+
+	if
+		file_getprop("/tmp/aroma-data/romtype.prop","selected.0") != "1"
+	then
+		selectbox(
+			"Senseless Option:",
+			"Would You Like To Include Fancy Sense Widgets?",
+			"icons/rosie",
+			"widget.prop",
+		
+			"Yes","",1,
+			"No","",0
+		);	
+	endif;	
+	
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Rosie Mod Options
+###############################
+
+	if
+		file_getprop("/tmp/aroma-data/romtype.prop","selected.0") == "1"
+	then
+		selectbox(
+			"Rosie Mod:",
+			"Choose Your Rosie Workspace",
+			"icons/rosie",
+			"rosie.prop",
+		
+			"Rosie 4x4","4x4 Rosie Workspace",1,
+			"Rosie 4x5","4x5 Rosie Workspace",0,
+			"Rosie 4x6","4x6 Rosie Workspace",0,
+			"Rosie 5x5","5x5 Rosie Workspace",0
+		);
+	endif;
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Superuser Options
+###############################
+
+	selectbox(
+		"Superuser:",
+		"Choose Your Superuser Version",
+		"icons/superuser",
+		"superuser.prop",
+	
+		"CWM Superuser","Koush",0,
+		"MIUI Security","MIUI",0,
+		"SuperSU","Chainfire",0,
+		"Superuser","ChainsDD",1
+	);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Graphics Options
+###############################
+
+	selectbox(
+		"Graphics Selection:",
+		"Which Graphics Setup Would You Like?",
+		"icons/screen",
+		"graphics.prop",
+	
+		"Quality","For Gamers Who Like Quality - Enables MultiSampling Anti-Aliasing",1,
+		"Performance","For Those Who Don't Care - Disables MultiSampling Anti-Aliasing",0
+	);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Vsync Options
+###############################
+
+	selectbox(
+		"Vsync Selection:",
+		"Would You Like VSync On?",
+		"icons/screen",
+		"vsync.prop",
+	
+		"On","Limit My FPS For A Smoother UI - Matches FPS To Screen Rate",1,
+		"Off","Unlock My FPS for full Performance",0
+	);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Kernel Options
+###############################
+
+	selectbox(
+		"Buttered Toast Kernel Selection:",
+		"Which Configuration Would You Like?",
+		"icons/kernel",
+		"kernel.prop",
+	
+		"Maxed Overclock","Maxed Performance - CPU: 1.72MHz, GPU Overclocked, Xondemand Governor, Medium Voltage",0,
+		"Extreme Overclock","Maxed Performance - CPU: 1.67MHz, GPU Overclocked, Xondemand Governor, Medium Voltage",0,
+		"Overclock","Performance - CPU:1.58MHz, GPU Overclocked, Xondemand Governor, Low Voltage",1,
+		"Relaxed","Mixed Battery and Performance - CPU: 1.24MHz, Xondemand Governor, Semi Low Voltage",0,
+		"Underclock","Battery - CPU: 1.18MHz, GPU Underclocked, Xondemand Governor, Extra Low Voltage",0
+	);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Carrier Options
+###############################
+
+	selectbox(
+		"Carrier Selection:",
+		"Choose Your Carrier",
+		"icons/carrier",
+		"carrier.prop",
+	
+		"Cricket","Install Cricket Carrier Files",0,
+		"Sprint","Install Sprint Carrier Files",1,
+		"Virgin Mobile","Install Virgin Mobile Carrier Files",0
+	);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Add-on App Options
+###############################
+
+	checkbox(
+		"Add-on Apps - User",
+		"Please Select Your Options And Press 'Next' To Continue:",
+		"icons/apps",
+		"apps.prop",
+		
+		"Ad-Away","",1,
+		"Adobe Reader","",0,
+		"Android Terminal","",1,
+		"Cache Cleaner NG","",1,
+	    "Dolby Mobile","",0,
+	 	"FX File Explorer","",1,  
+	 	"Facebook","",1,
+	 	"Facebook Home","",1,		
+		"Flash Player","",1,
+		"Google Chrome","",1,		
+		"Google+","",1,
+		"Google Mail","",1,
+		"Google Maps","",1,
+		"Google Mobile Services","",1,
+		"Google Play Music","",0,
+		"Google Videos","",0,
+		"Google Voice","",0,
+		"Kernel Tuner","",1,
+		"MX Player","",0,
+		"Mobile SVN","",0,
+		"ViperFX EQ","",1,
+		"Playstation Mobile","",0,
+		"Script-Manager","",0,
+		"StickMount OTG","",0,
+		"System Tuner","",0,
+		"Titanium Backup","",0,
+		"Ultimate Backup","",0,
+		"USB OTG Helper","",0,
+		"Volume Sync","",1,
+		"Wifi Tether","",1,	
+		"YouTube","",1
+	);
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Add-on Stock Options
+###############################
+
+	checkbox(
+		"Add-on Apps - Stock",
+		"Please Select Your Options And Press 'Next' To Continue:",
+		"icons/apps",
+		"addstock.prop",
+		
+		"Connections Optimizer","",0,
+		"HTC Screenshot","",1,
+		"HTC Facebook","",1,
+		"Internet Browser","",1
+		
+	);
+	
+	if
+		file_getprop("/tmp/aroma-data/addstock.prop","item.0.3") == "0"
+	then
+		selectbox(
+			"HTC Facebook Option",
+			"You Chose To Remove HTC Facebook, This Will Break FriendStream Functionality, Would You Like To Remove FriendStream As Well?",
+			"icons/apps",
+			"friendstream.prop",
+		
+			"Yes","Remove FriendStream",1,
+			"No","Keep it just in case",0
+		);
+	endif;
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Stock Options
+###############################
+
+	selectbox(
+		"Optional Stock Files:",
+		"Would You Like To Install Stock Apps?",
+		"icons/apps",
+		"stock.prop",
+	
+		"All","Install All Stock Apps",0,
+		"Some","I Want To Select The Apps I Want",1,
+		"None","No Thanks, I Like Free Storage Memory",0
+	);
+
+	if
+		file_getprop("/tmp/aroma-data/stock.prop","selected.0") == "2"
+	then
+		checkbox(
+			"Optional Stock Files:",
+			"Please Select Your Options And Press 'Next' To Continue:",
+			"icons/apps",
+			"optional.prop",
+		  
+		 	"All Sounds","",0,
+		 	"All Wallpapers","",0,
+			"Amazon MP3","",0,
+			"BlockBuster","",0,
+			"DockMode","",0,
+			"EReader","",0,
+			"FaceLock","",0,
+			"Flickr","",0,
+			"HTC Car Panel","",0,
+			"HTC Compress Viewer","",0,
+			"HTC Data Rowming Widget","",0,	
+			"HTC Data Strip Widget","",0,
+			"HTC FM Radio","",0,
+			"HTC Footprints","",0,
+			"HTC Notes","",0,
+			"HTC Watch","",0,
+			"JetCet Print","",0,	
+			"MyShelf Widget","",0,
+			"News","",0,
+			"Nascar Sprint","",0,
+			"Picasa","",0,
+			"Polaris Office","",0,
+			"Sprint Mobile Wallet","",0,
+			"Sprint TV","",0,	
+			"Sprint Zone","",0,
+			"Stocks","",0,
+			"Swype Keyboard","",0,
+			"TalkBack","",0,
+			"Transfer Rider","",0,
+			"Trends Widget","",0,
+			"Twitter","",0
+		);
+	endif;	
+	
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Summary
+###############################	
+
+#	if
+#		file_getprop("/tmp/aroma-data/restore.prop","selected.0") != "3"
+#	then
+#		if 
+#			zipexec("setup/review.sh") == "0"
+#		then
+#			setcolor("textfg", "#09f");
+#			exec("/sbin/sleep", "1");
+#			textbox(
+#				"Selection Summary",
+#				"Press 'Next' To Continue, Or 'Back' To Change Settings",
+#				"icons/info",
+#				read("/tmp/summary.txt")
+#			);
+#			setcolor("textfg", "#fff");	
+#		endif;
+#	endif;
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Backup Aroma
+###############################
+
+	if 
+		file_getprop("/tmp/aroma-data/restore.prop","selected.0") != "1"
+	then
+		selectbox(
+			"Backup Aroma Options",
+			"Would You Like To Backup Aroma Options for future auto installation?",
+			"icons/phone",
+			"backup.prop",
+
+			"Yes","Backup Aroma Options",1,
+			"No","My Preference Always Changes",0
+		);
+	endif;	
+endif;
+ 
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Install Rom - Execute Updater-Script
+###############################
+
+alert(
+	"Ready To Install",
+	"Settings Saved, Now Let Us Install This Monster of a Rom!",
+	"icons/alert",
+	"OK"
+ );
+
+install(
+	"Installing",
+	"Please Wait...",
+	"icons/install",
+	"Finished, Press 'Next'"
+);
+
+ini_set("text_next", "Done");
+
+viewbox(
+	"Installation Completed",
+	"<#080>Congratulations...</#>\n\n"+
+	ini_get("rom_name") + " " + ini_get("rom_version") + " Has Been Installed Successfully.\n\n"+
+	"Enjoy!",
+	"icons/info"
+);
+
+ini_set("text_next", "Finished");
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Backup and Logs
+###############################
+
+run_program("/tmp/logs.sh");
+
+if
+	file_getprop("/tmp/aroma-data/backup.prop","selected.0") == "1"
+then
+	run_program("/tmp/backup.sh");
+endif;
+
+###############################
+# END
+###############################
+#------------------------------
+###############################
+# Reboot Options
+###############################
+
+selectbox(
+	"Reboot?",
+	"Would You Like To Reboot Immediately?",
+	"icons/reboot",
+	"reboot.prop",
+
+	"Reboot To System","",1,
+	"Reboot Recovery","",0,
+	"No Reboot","",0
+ ); 
+
+if
+	file_getprop("/tmp/aroma-data/reboot.prop","selected.0") != "3"
+then
+	run_program("/tmp/reboot.sh");
+endif;
+
+###############################
+# END
+###############################
