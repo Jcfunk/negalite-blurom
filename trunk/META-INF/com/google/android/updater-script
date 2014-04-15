@@ -534,159 +534,164 @@ endif;
 if 
 file_getprop("/tmp/aroma-data/apps.prop","item.0.6") == "1"
 then
+ui_print("@-Installing ES File Explorer");
+package_extract_file("applications_system/com.estrongs.android.pop.apk", "/system/app/com.estrongs.android.pop.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.7") == "1"
+then
 ui_print("@-Installing FX File Explorer");
 package_extract_file("applications_system/nextapp.fx.apk", "/system/app/nextapp.fx.apk");
 package_extract_file("applications_system/nextapp.fx.rr.apk", "/system/app/nextapp.fx.rr.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.7") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.8") == "1"
 then
 ui_print("@-Installing Facebook");
 package_extract_file("applications_system/com.facebook.katana.apk", "/system/app/com.facebook.katana.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.8") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.9") == "1"
 then
 ui_print("@-Installing Facebook Home");
 package_extract_file("applications_system/com.facebook.home.apk", "/system/app/com.facebook.home.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.9") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.10") == "1"
 then
 ui_print("@-Installing Flashplayer");
 package_extract_file("applications_data/com.adobe.flashplayer.apk", "/data/app/com.adobe.flashplayer.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.10") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.11") == "1"
 then
 ui_print("@-Installing Google Chrome");
 package_extract_file("applications_data/com.android.chrome.apk", "/data/app/com.android.chrome.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.11") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.12") == "1"
 then
 ui_print("@-Installing Google+");
 package_extract_file("applications_data/com.google.android.apps.plus.apk", "/data/app/com.google.android.apps.plus.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.12") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.13") == "1"
 then
 ui_print("@-Installing Google Mail");
 package_extract_file("applications_system/com.google.android.gm.apk", "/system/app/com.google.android.gm.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.13") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.14") == "1"
 then
 ui_print("@-Installing Google Maps");
 package_extract_file("applications_system/com.google.android.apps.maps.apk", "/system/app/com.google.android.apps.maps.apk");
 package_extract_file("applications_system/com.google.android.street.apk", "/system/app/com.google.android.street.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.14") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.15") == "1"
 then
 ui_print("@-Installing Google Mobile Services");
 package_extract_file("applications_system/com.google.android.gms.apk", "/data/app/com.google.android.gms.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.15") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.16") == "1"
 then
 ui_print("@-Installing Google Play Music");
 package_extract_file("applications_system/com.google.android.music.apk", "/system/app/com.google.android.music.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.16") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.17") == "1"
 then
 ui_print("@-Installing Google Videos");
 package_extract_file("applications_system/com.google.android.videos.apk", "/system/app/com.google.android.videos.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.17") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.18") == "1"
 then
 ui_print("@-Installing Google Voice");
 package_extract_file("applications_system/com.google.android.apps.googlevoice.apk", "/system/app/com.google.android.apps.googlevoice.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.18") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.19") == "1"
 then
 ui_print("@-Installing Kernel Tuner");
 package_extract_file("applications_system/rs.pedjaapps.KernelTuner.apk", "/system/app/rs.pedjaapps.KernelTuner.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.19") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.20") == "1"
 then
 ui_print("@-Installing MX Player");
 package_extract_file("applications_system/com.mxtech.videoplayer.ad.apk", "/system/app/com.mxtech.videoplayer.ad.apk");
 package_extract_file("applications_data/com.mxtech.ffmpeg.v7_neon.apk", "/data/app/com.mxtech.ffmpeg.v7_neon.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.20") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.21") == "1"
 then
 ui_print("@-Installing Mobile SVN");
 package_extract_file("applications_system/de.dogcraft.mobile.svn.api8.lite.apk", "/system/app/de.dogcraft.mobile.svn.api8.lite.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.21") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.22") == "1"
 then
 ui_print("@-Installing ViperFX EQ");
-package_extract_file("applications_system/viper_fx/ViPER4Android_FX.apk", "/system/app/ViPER4Android_FX.apk");
-package_extract_dir("applications_system/viper_fx/sdcard", "/sdcard");
+package_extract_file("applications_system/com.vipercn.viper4android_v2.apk", "/system/app/com.vipercn.viper4android_v2.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.22") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.23") == "1"
 then
 ui_print("@-Installing Playstation Mobile");
 package_extract_file("applications_data/com.playstation.psstore.apk", "/data/app/com.playstation.psstore.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.23") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.24") == "1"
 then
 ui_print("@-Installing Script-Manager");
 package_extract_file("applications_system/os.tools.scriptmanager.apk", "/system/app/os.tools.scriptmanager.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.24") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.25") == "1"
 then
 ui_print("@-Installing StickMount OTG");
 package_extract_file("applications_system/eu.chainfire.stickmount.apk", "/system/app/eu.chainfire.stickmount.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.25") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.26") == "1"
 then
 ui_print("@-Installing System Tuner");
 package_extract_file("applications_system/ccc71.pmw.apk", "/system/app/ccc71.pmw.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.26") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.27") == "1"
 then
 ui_print("@-Installing Titanium Backup");
 package_extract_file("applications_system/com.keramidas.TitaniumBackup.apk", "/system/app/com.keramidas.TitaniumBackup.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.27") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.28") == "1"
 then
 ui_print("@-Installing Ultimate Backup");
 package_extract_file("applications_system/com.jrummy.app.managerfree.apk", "/system/app/com.jrummy.app.managerfree.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.28") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.29") == "1"
 then
 ui_print("@-Installing USB OTG Helper");
 package_extract_file("applications_system/net.shajul.usbotg.apk", "/system/app/net.shajul.usbotg.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.29") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.30") == "1"
 then
 ui_print("@-Installing Volume Sync");
 package_extract_file("applications_system/com.jestasfunhouse.volumesync.apk", "/system/app/com.jestasfunhouse.volumesync.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.30") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.31") == "1"
 then
 ui_print("@-Installing Wifi Tether");
 package_extract_file("applications_data/com.googlecode.android.wifi.tether.apk", "/data/app/com.googlecode.android.wifi.tether.apk");
 endif;
 if 
-file_getprop("/tmp/aroma-data/apps.prop","item.0.31") == "1"
+file_getprop("/tmp/aroma-data/apps.prop","item.0.32") == "1"
 then
 ui_print("@-Installing YouTube");
 package_extract_file("applications_system/com.google.android.youtube.apk", "/system/app/com.google.android.youtube.apk");
@@ -959,7 +964,7 @@ endif;
 if 
 file_getprop("/tmp/aroma-data/superuser.prop","selected.0") == "2"
 then
-ui_print("@-Installing MIUI Security Support");
+ui_print("@-Installing Negalite Security Support");
 package_extract_file("superuser/miui_security/Superuser.apk", "/system/app/Superuser.apk");
 package_extract_file("superuser/miui_security/su", "/system/xbin/su");
 package_extract_file("superuser/miui_security/liblbesec.so", "/system/lib/liblbesec.so");
@@ -1106,6 +1111,20 @@ set_perm(0, 0, 0777, "/tmp/unpackbootimg");
 run_program("/tmp/unpackbootimg", "/tmp/boot.img", "/tmp/");
 run_program("/tmp/kernel_settings_uc.sh");
 endif;
+
+if
+file_getprop("/tmp/aroma-data/kernel.prop","selected.0") == "6"
+then
+ui_print("");
+ui_print("@-Setting Up Kernel Jcfunk Settings");
+run_program("/sbin/busybox", "cp", "/tmp/init.qcom.post_boot_ex.sh", "/system/etc/init.qcom.post_boot.sh");
+set_perm(0, 0, 0777, "/tmp/kernel_settings_jc.sh");
+set_perm(0, 0, 0777, "/tmp/mkbootimg");
+set_perm(0, 0, 0777, "/tmp/unpackbootimg");
+run_program("/tmp/unpackbootimg", "/tmp/boot.img", "/tmp/");
+run_program("/tmp/kernel_settings_jc.sh");	
+endif;
+
 set_progress(0.575);
 
 ui_print("");
@@ -1130,7 +1149,7 @@ ui_print("");
 ui_print("@Creating Symlinks");
 symlink("dumpstate", "/system/bin/dumpcrash");
 symlink("/factory/hdcp.keys", "/system/vendor/firmware/hdcp.keys");
-symlink("/system/bin/mksh", "/system/bin/sh");
+symlink("/system/bin/bash", "/system/bin/sh");
 set_perm(1000, 1000, 0755, "/system/xbin/openvpn");
 symlink("/proc/calibration", "/system/etc/calibration");
 symlink("/proc/mounts", "/system/etc/mtab");
@@ -1155,55 +1174,55 @@ set_perm(0, 2000, 0755, "/system/bin/toolbox");
 set_progress(0.675);
 ui_print("@-Symlinking Toolbox");
 symlink("dumpstate", "/system/bin/dumpcrash");
-symlink("toolbox", "/system/bin/cat");
-symlink("toolbox", "/system/bin/chmod");
-symlink("toolbox", "/system/bin/chown");
-symlink("toolbox", "/system/bin/cmp");
+#symlink("toolbox", "/system/bin/cat");
+#symlink("toolbox", "/system/bin/chmod");
+#symlink("toolbox", "/system/bin/chown");
+#symlink("toolbox", "/system/bin/cmp");
 symlink("toolbox", "/system/bin/date");
-symlink("toolbox", "/system/bin/dd");
-symlink("toolbox", "/system/bin/df");
-symlink("toolbox", "/system/bin/dmesg");
+#symlink("toolbox", "/system/bin/dd");
+#symlink("toolbox", "/system/bin/df");
+#symlink("toolbox", "/system/bin/dmesg");
 symlink("toolbox", "/system/bin/getevent");
 symlink("toolbox", "/system/bin/getprop");
-symlink("toolbox", "/system/bin/hd");
+#symlink("toolbox", "/system/bin/hd");
 symlink("toolbox", "/system/bin/id");
-symlink("toolbox", "/system/bin/ifconfig");
+#symlink("toolbox", "/system/bin/ifconfig");
 symlink("toolbox", "/system/bin/iftop");
-symlink("toolbox", "/system/bin/insmod");
+#symlink("toolbox", "/system/bin/insmod");
 symlink("toolbox", "/system/bin/ioctl");
 symlink("toolbox", "/system/bin/ionice");
-symlink("toolbox", "/system/bin/kill");
-symlink("toolbox", "/system/bin/ln");
+#symlink("toolbox", "/system/bin/kill");
+#symlink("toolbox", "/system/bin/ln");
 symlink("toolbox", "/system/bin/log");
-symlink("toolbox", "/system/bin/ls");
-symlink("toolbox", "/system/bin/lsmod");
+#symlink("toolbox", "/system/bin/ls");
+#symlink("toolbox", "/system/bin/lsmod");
 symlink("toolbox", "/system/bin/lsof");
-symlink("toolbox", "/system/bin/mkdir");
-symlink("toolbox", "/system/bin/mount");
-symlink("toolbox", "/system/bin/mv");
+#symlink("toolbox", "/system/bin/mkdir");
+#symlink("toolbox", "/system/bin/mount");
+#symlink("toolbox", "/system/bin/mv");
 symlink("toolbox", "/system/bin/nandread");
-symlink("toolbox", "/system/bin/netstat");
+#symlink("toolbox", "/system/bin/netstat");
 symlink("toolbox", "/system/bin/newfs_msdos");
 symlink("toolbox", "/system/bin/notify");
-symlink("toolbox", "/system/bin/printenv");
+#symlink("toolbox", "/system/bin/printenv");
 symlink("toolbox", "/system/bin/ps");
 symlink("toolbox", "/system/bin/renice");
-symlink("toolbox", "/system/bin/rm");
-symlink("toolbox", "/system/bin/rmdir");
-symlink("toolbox", "/system/bin/rmmod");
-symlink("toolbox", "/system/bin/route");
+#symlink("toolbox", "/system/bin/rm");
+#symlink("toolbox", "/system/bin/rmdir");
+#symlink("toolbox", "/system/bin/rmmod");
+#symlink("toolbox", "/system/bin/route");
 symlink("toolbox", "/system/bin/schedtop");
 symlink("toolbox", "/system/bin/sendevent");
 symlink("toolbox", "/system/bin/setconsole");
 symlink("toolbox", "/system/bin/setprop");
-symlink("toolbox", "/system/bin/sleep");
+#symlink("toolbox", "/system/bin/sleep");
 symlink("toolbox", "/system/bin/smd");
 symlink("toolbox", "/system/bin/start");
 symlink("toolbox", "/system/bin/stop");
-symlink("toolbox", "/system/bin/sync");
+#symlink("toolbox", "/system/bin/sync");
 symlink("toolbox", "/system/bin/top");
-symlink("toolbox", "/system/bin/touch");
-symlink("toolbox", "/system/bin/umount");
+#symlink("toolbox", "/system/bin/touch");
+#symlink("toolbox", "/system/bin/umount");
 symlink("toolbox", "/system/bin/uptime");
 symlink("toolbox", "/system/bin/vmstat");
 symlink("toolbox", "/system/bin/watchprops");

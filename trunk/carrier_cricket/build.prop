@@ -334,9 +334,6 @@ ro.wifi.hotspotUI=1
 ro.usb.tetheringUI=1
 ro.bt.tetheringUI=1
 
-#OTA Updater
-ro.product.version=NegaLite BluRom CDMA Cricket r121Jcfunk MOD 
-ro.build.display.id=Negalite Blurom Cricket r121Jcfunk MOD 
-otaupdater.otaid=negalite-blurom-svn
-otaupdater.otatime=20130921-1200
-otaupdater.otaver=negalite-blurom_r121
+#Rom version
+ro.product.version=NegaLite BluRom CDMA Cricket r121Jcfunk MODv2 
+ro.build.display.id=Negalite Blurom Cricket r121Jcfunk MODv2 
