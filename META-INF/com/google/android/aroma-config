@@ -25,7 +25,7 @@ fontresload( "1", "ttf/Roboto-Regular.ttf;ttf/DroidSansFallback.ttf;", "14" );
 ###############################
 
 ini_set("rom_name",             "NegaLite BluRom");
-ini_set("rom_version",          "SVN Series");
+ini_set("rom_version",          "Jcfunk MOD");
 ini_set("rom_author",           "Negamann303");
 ini_set("rom_device",           "HTC SHOOTER");
 
@@ -240,7 +240,7 @@ then
 		"superuser.prop",
 	
 		"CWM Superuser","Koush",0,
-		"MIUI Security","MIUI",0,
+		"Negalite Security","MIUI",0,
 		"SuperSU","Chainfire",0,
 		"Superuser","ChainsDD",1
 	);
@@ -299,7 +299,8 @@ then
 		"Extreme Overclock","Maxed Performance - CPU: 1.67MHz, GPU Overclocked, Xondemand Governor, Medium Voltage",0,
 		"Overclock","Performance - CPU:1.58MHz, GPU Overclocked, Xondemand Governor, Low Voltage",1,
 		"Relaxed","Mixed Battery and Performance - CPU: 1.24MHz, Xondemand Governor, Semi Low Voltage",0,
-		"Underclock","Battery - CPU: 1.18MHz, GPU Underclocked, Xondemand Governor, Extra Low Voltage",0
+		"Underclock","Battery - CPU: 1.18MHz, GPU Underclocked, Xondemand Governor, Extra Low Voltage",0,
+		"Jcfunked Overclock","Maxed Performance - CPU: 1.67MHz, GPU Overclocked, Interactive Governor, Medium Voltage",0
 	);
 
 ###############################
@@ -340,7 +341,8 @@ then
 		"Android Terminal","",1,
 		"Cache Cleaner NG","",1,
 	    "Dolby Mobile","",0,
-	 	"FX File Explorer","",1,  
+	  	"ES File Explorer","",1,
+	 	"FX File Explorer","",0,  
 	 	"Facebook","",1,
 	 	"Facebook Home","",1,		
 		"Flash Player","",1,
