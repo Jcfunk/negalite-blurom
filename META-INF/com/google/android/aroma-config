@@ -25,8 +25,8 @@ fontresload( "1", "ttf/Roboto-Regular.ttf;ttf/DroidSansFallback.ttf;", "14" );
 ###############################
 
 ini_set("rom_name",             "NegaLite BluRom");
-ini_set("rom_version",          "Jcfunk MOD");
-ini_set("rom_author",           "Negamann303");
+ini_set("rom_version",          "JcfunkMOD v3");
+ini_set("rom_author",           "Negamann303 & Jcfunk");
 ini_set("rom_device",           "HTC SHOOTER");
 
 ###############################
@@ -341,10 +341,10 @@ then
 		"Android Terminal","",1,
 		"Cache Cleaner NG","",1,
 	    "Dolby Mobile","",0,
-	  	"ES File Explorer","",1,
+	  	"ES File Manager","",1,
 	 	"FX File Explorer","",0,  
 	 	"Facebook","",1,
-	 	"Facebook Home","",1,		
+	 	"Facebook Home","",0,		
 		"Flash Player","",1,
 		"Google Chrome","",1,		
 		"Google+","",1,
@@ -367,7 +367,8 @@ then
 		"USB OTG Helper","",0,
 		"Volume Sync","",1,
 		"Wifi Tether","",1,	
-		"YouTube","",1
+		"YouTube","",1,
+		"Kernel Tuner 2014","",1
 	);
 
 ###############################

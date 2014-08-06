@@ -9,7 +9,7 @@ echo $MECH
 echo $MECH
 echo $MECH
 
-if  [ $MECH != "armv7l" ]; then
+if  [ $MECH == "armv7l" ]; then
 	
 	MYPATH=`readlink -f $0`
 	cd `dirname $MYPATH`	

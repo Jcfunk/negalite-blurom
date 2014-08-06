@@ -41,7 +41,7 @@ ro.build.version.release=4.0.3
 ro.build.date=四  2月  7 13:03:19 CST 2013
 ro.build.date.utc=1360213399
 ro.build.type=dev
-ro.build.user=
+ro.build.user=root
 ro.build.host=abm036
 ro.build.tags=release-keys
 ro.product.brand=virgin_mobile
@@ -335,5 +335,5 @@ ro.usb.tetheringUI=1
 ro.bt.tetheringUI=1
 
 #Rom version
-ro.product.version=NegaLite BluRom CDMA Cricket r121Jcfunk MODv2 
-ro.build.display.id=Negalite Blurom Cricket r121Jcfunk MODv2 
+ro.product.version=NegaLite BluRom CDMA Cricket JcfunkMODv3
+ro.build.display.id=Negalite Blurom Cricket JcfunkMODv3 

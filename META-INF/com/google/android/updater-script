@@ -116,9 +116,9 @@ run_program("/tmp/tune2fs.ext4", "-c", "1", "-m", "0", "-o", "journal_data_write
 run_program("/tmp/fsck.ext4", "-Dfy", "/dev/block/mmcblk0p23");
 set_progress(0.190);
 ui_print("@-Optimizing Devlog");
-run_program("/tmp/mkfs.ext4", "-O", "^ext_attr,^has_journal,^huge_file", "-L", "DEVLOG", "-b", "4096", "-m", "0", "-F", "/dev/block/mmcblk0p29");
-run_program("/tmp/tune2fs.ext4", "-c", "1", "-m", "0", "-o", "journal_data_writeback", "/dev/block/mmcblk0p29");
-run_program("/tmp/fsck.ext4", "-Dfy", "/dev/block/mmcblk0p29");
+run_program("/tmp/mkfs.ext4", "-O", "^ext_attr,^has_journal,^huge_file", "-L", "DEVLOG", "-b", "4096", "-m", "0", "-F", "/dev/block/mmcblk0p28");
+run_program("/tmp/tune2fs.ext4", "-c", "1", "-m", "0", "-o", "journal_data_writeback", "/dev/block/mmcblk0p28");
+run_program("/tmp/fsck.ext4", "-Dfy", "/dev/block/mmcblk0p28");
 ui_print("Done");
 set_progress(0.200);
 
@@ -366,7 +366,6 @@ delete("/system/app/WeatherProvider.apk");
 delete("/system/app/WeatherSyncProvider.apk");
 delete("/system/app/WeatherVideo.apk");
 delete("/system/app/WifiRouter.apk");
-delete("/system/app/WorldClock.apk");
 ui_print("Done");
 run_program("/sbin/sleep", "1");
 set_progress(0.350);
@@ -496,7 +495,8 @@ endif;
 
 ui_print("");
 ui_print("@Installing Add-on Apps - If Any");
-mount("ext4", "EMMC", "/dev/block/mmcblk0p24", "/data");
+#mount("ext4", "EMMC", "/dev/block/mmcblk0p24", "/data");
+run_program("/sbin/busybox", "mount", "/dev/block/mmcblk0p24", "/data");
 
 run_program("/tmp/makedata.sh");
 run_program("/sbin/sleep", "1");
@@ -534,7 +534,7 @@ endif;
 if 
 file_getprop("/tmp/aroma-data/apps.prop","item.0.6") == "1"
 then
-ui_print("@-Installing ES File Explorer");
+ui_print("@-Installing ES File Manager");
 package_extract_file("applications_system/com.estrongs.android.pop.apk", "/system/app/com.estrongs.android.pop.apk");
 endif;
 if 
@@ -695,6 +695,12 @@ file_getprop("/tmp/aroma-data/apps.prop","item.0.32") == "1"
 then
 ui_print("@-Installing YouTube");
 package_extract_file("applications_system/com.google.android.youtube.apk", "/system/app/com.google.android.youtube.apk");
+endif;
+if 
+file_getprop("/tmp/aroma-data/apps.prop","item.0.33") == "1"
+then
+ui_print("@-Installing Kernel Tuner");
+package_extract_file("applications_system/rs.pedjaapps.kerneltuner.apk", "/system/app/rs.pedjaapps.KernelTuner.apk");
 endif;
 ui_print("Done");
 run_program("/sbin/sleep", "1");
