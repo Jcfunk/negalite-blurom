@@ -622,7 +622,6 @@ file_getprop("/tmp/aroma-data/apps.prop","item.0.20") == "1"
 then
 ui_print("@-Installing MX Player");
 package_extract_file("applications_system/com.mxtech.videoplayer.ad.apk", "/system/app/com.mxtech.videoplayer.ad.apk");
-package_extract_file("applications_data/com.mxtech.ffmpeg.v7_neon.apk", "/data/app/com.mxtech.ffmpeg.v7_neon.apk");
 endif;
 if 
 file_getprop("/tmp/aroma-data/apps.prop","item.0.21") == "1"
