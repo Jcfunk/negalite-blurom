@@ -14,7 +14,7 @@ if  [ $MECH == "armv7l" ]; then
 	MYPATH=`readlink -f $0`
 	cd `dirname $MYPATH`	
 
-	LINE="$(sed  '4{p;q;}' .svn/entries)"
+	LINE="$(sed  '4{p;q;}' version)"
 
 	echo " Android Detected! - Zipping"
 	sleep 2
