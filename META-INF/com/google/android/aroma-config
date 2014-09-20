@@ -368,7 +368,7 @@ then
 		"Volume Sync","",1,
 		"Wifi Tether","",1,	
 		"YouTube","",1,
-		"Kernel Tuner 2014","",1
+		"Kernel Tuner 2014","",0
 	);
 
 ###############################

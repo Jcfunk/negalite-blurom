@@ -698,8 +698,8 @@ endif;
 if 
 file_getprop("/tmp/aroma-data/apps.prop","item.0.33") == "1"
 then
-ui_print("@-Installing Kernel Tuner");
-package_extract_file("applications_system/rs.pedjaapps.kerneltuner.apk", "/system/app/rs.pedjaapps.KernelTuner.apk");
+ui_print("@-Installing Kernel Tuner 2014");
+package_extract_file("applications_system/rs.pedjaapps.kerneltuner-beta.apk", "/system/app/rs.pedjaapps.KernelTuner.apk");
 endif;
 ui_print("Done");
 run_program("/sbin/sleep", "1");
