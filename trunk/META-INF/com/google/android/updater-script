@@ -416,6 +416,7 @@ file_getprop("/tmp/aroma-data/romtype.prop","selected.0") == "6"
 then
 ui_print("");
 ui_print("@Tablet Mode");
+package_extract_dir("senseless/tablet/system", "/system");
 delete("/system/app/Calendar.apk");
 delete("/system/app/CalendarProvider.apk");
 delete("/system/app/ContactsProvider.apk");

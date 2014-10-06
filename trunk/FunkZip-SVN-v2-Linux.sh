@@ -1,4 +1,4 @@
-#!sh
+#!./sh
 
 NEGALITE=negalite_blurom
 
@@ -26,7 +26,7 @@ if  [ $MECH == "armv7l" ]; then
 	zip -5 negalite-funk_mod_v$LINE.zip -r applications_data applications_optional applications_required applications_stock applications_system \
 		carrier_cricket carrier_sprint carrier_virgin_mobile graphics kernel META-INF rosie_mods senseless setup sound_optional superuser system -x "*.svn*"	
 	
-	if [ -e negalite-funk_mod_vLINE.zip ]; then	
+	if [ -e negalite-funk_mod_v$LINE.zip ]; then	
 		echo "Done, Now Go Flash This Baby!" 
 	else
 		echo "Something went wrong... No Zip exists. Make sure your SVN is updated to the latest revision..." 
@@ -44,8 +44,7 @@ else
 
 	mv ./$NEGALITE.zip $NEGAZIP/$NEGALITE.zip
 
-	REVISION="$(svn info http://negalite-blurom.googlecode.com/svn/trunk/ | grep "^Revision:" | cut -c 11-)"
-	REV="$(($REVISION - 1))"
+	REV="$(sed  '4{p;q;}' version)"
 	
 	chmod 775 $NEGAZIP/signapk.jar
 
