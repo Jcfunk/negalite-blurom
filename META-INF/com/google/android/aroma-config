@@ -135,8 +135,8 @@ then
 		"icons/wipe",
 		"wipe_select.prop",
 	
-		"Yes","Please Do!",1,
-		"No","No Thanks, I Already Wiped In Recovery",0
+		"Yes","Please Do!",0,
+		"No","No Thanks, I Already Wiped In Recovery",1
 	);
 	
 	if
@@ -148,10 +148,10 @@ then
 			"icons/wipe",
 			"wipe.prop",
 		  
-			"Wipe Boot",          "This Will Wipe The 'Boot' Partition",1,
-			"Wipe Data",          "This Will Wipe The 'Data' Partition",1,
-			"Wipe SD-Ext",        "This Will Wipe The 'SD-Ext' Partitions",1,
-			"Wipe Old SD",        "This Will Wipe The Old System SD Files",1
+			"Wipe Boot",          "This Will Wipe The 'Boot' Partition",0,
+			"Wipe Data",          "This Will Wipe The 'Data' Partition",0,
+			"Wipe SD-Ext",        "This Will Wipe The 'SD-Ext' Partitions",0,
+			"Wipe Old SD",        "This Will Wipe The Old System SD Files",0
 		);
 	endif;
 
@@ -311,6 +311,10 @@ then
 # Carrier Options
 ###############################
 
+if
+		file_getprop("/tmp/aroma-data/romtype.prop","selected.0") != "6"
+	then
+
 	selectbox(
 		"Carrier Selection:",
 		"Choose Your Carrier",
@@ -321,6 +325,14 @@ then
 		"Sprint","Install Sprint Carrier Files",1,
 		"Virgin Mobile","Install Virgin Mobile Carrier Files",0
 	);
+	
+	else
+	writetmpfile(
+		"carrier.prop",
+		"selected.0 =2\n"
+		);
+
+	endif;
 
 ###############################
 # END
